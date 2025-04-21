@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const UserRepository = {
+export const userRepository = {
 
   async create(data) {
     return await prisma.user.create({
@@ -11,18 +11,20 @@ export const UserRepository = {
         fullName: data.fullName,
         email: data.email,
         password: data.password,
-        isActive: data.isActive
+        isActive : data.isActive
       }
     });
   },
 
   async update(id, data) {
+    console.log(data);
     return await prisma.user.update({
       where: { id },
       data: {
         userName : data.userName,
         fullName : data.fullName,
-        email : data.email
+        email : data.email,
+        isActive : data.isActive
       }
     });
   },
@@ -61,6 +63,34 @@ export const UserRepository = {
         isActive: true
       },
       where: { id }
+    });
+  },
+
+  async findByUserName(userName) {
+    return await prisma.user.findFirst({
+      select: {
+        id: true,
+        userName: true,
+        fullName: true,
+        email: true,
+        password: true,
+        isActive: true
+      },
+      where: {userName}
+    });
+  },
+
+  async findByEmail(email) {
+    return await prisma.user.findFirst({
+      select: {
+        id: true
+      },
+      where: {
+        email: {
+          equals: email.toLowerCase(),
+          mode: 'insensitive'
+        }
+      }
     });
   }
 

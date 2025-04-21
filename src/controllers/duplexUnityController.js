@@ -1,16 +1,15 @@
-import { userService } from '../services/userService.js';
+import { duplexUnityService } from '../services/duplexUnityService.js';
 
-export const userController = {
+export const duplexUnityController = {
 
   async create(req, res) {
     try {
       const data = req.body;
-      const userSaved = await userService.create(data);
-      const { password, ...userWithOutPassword } = userSaved;
+      const duplexUnitySaved = await duplexUnityService.create(data);
       
       res.status(201).json({
         success: true,
-        data: userWithOutPassword
+        data: duplexUnitySaved
       });
     } catch (error) {
       res.status(400).json({
@@ -25,12 +24,11 @@ export const userController = {
       const id = parseInt(req.params.id);
       const data = req.body;
 
-      const userSaved = await userService.update(id, data);
-      const { password, ...userWithOutPassword } = userSaved;
+      const dupĺexUnitySaved = await duplexUnityService.update(id, data);
       
       res.status(200).json({
         success: true,
-        data: userWithOutPassword
+        data: dupĺexUnitySaved
       });
     } catch (error) {
       res.status(500).json({
@@ -42,10 +40,10 @@ export const userController = {
 
   async findAll(req, res) {
     try {
-      const users = await userService.findAll();
+      const duplexUnity = await duplexUnityService.findAll();
       res.status(200).json({
         success: true,
-        data: users
+        data: duplexUnity
       });
     } catch (error) {
       res.status(500).json({
@@ -57,18 +55,34 @@ export const userController = {
 
   async findById(req, res) {
     try {
-      const user = await userService.findById(parseInt(req.params.id));
+      const duplexUnity = await duplexUnityService.findById(parseInt(req.params.id));
       
-      if (!user) {
+      if (!duplexUnity) {
         return res.status(404).json({
           success: false,
-          message: 'User Not found'
+          message: 'Duplex Unity Not found'
         });
       }
 
       res.status(200).json({
         success: true,
         data: user
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  },
+
+  async findByDuplexId(req, res) {
+    try {
+      const duplexUnity = await duplexUnityService.findByDuplexId(req.params.id);
+      
+      res.status(200).json({
+        success: true,
+        data: duplexUnity
       });
     } catch (error) {
       res.status(500).json({

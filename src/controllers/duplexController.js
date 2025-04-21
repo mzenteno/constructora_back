@@ -1,16 +1,15 @@
-import { userService } from '../services/userService.js';
+import { duplexService } from '../services/duplexService.js';
 
-export const userController = {
+export const duplexController = {
 
   async create(req, res) {
     try {
       const data = req.body;
-      const userSaved = await userService.create(data);
-      const { password, ...userWithOutPassword } = userSaved;
+      const duplexSaved = await duplexService.create(data);
       
       res.status(201).json({
         success: true,
-        data: userWithOutPassword
+        data: duplexSaved
       });
     } catch (error) {
       res.status(400).json({
@@ -25,12 +24,11 @@ export const userController = {
       const id = parseInt(req.params.id);
       const data = req.body;
 
-      const userSaved = await userService.update(id, data);
-      const { password, ...userWithOutPassword } = userSaved;
+      const dupĺexSaved = await duplexService.update(id, data);
       
       res.status(200).json({
         success: true,
-        data: userWithOutPassword
+        data: dupĺexSaved
       });
     } catch (error) {
       res.status(500).json({
@@ -42,10 +40,10 @@ export const userController = {
 
   async findAll(req, res) {
     try {
-      const users = await userService.findAll();
+      const duplex = await duplexService.findAll();
       res.status(200).json({
         success: true,
-        data: users
+        data: duplex
       });
     } catch (error) {
       res.status(500).json({
@@ -57,18 +55,18 @@ export const userController = {
 
   async findById(req, res) {
     try {
-      const user = await userService.findById(parseInt(req.params.id));
+      const duplex = await duplexService.findById(parseInt(req.params.id));
       
-      if (!user) {
+      if (!duplex) {
         return res.status(404).json({
           success: false,
-          message: 'User Not found'
+          message: 'Duplex Not found'
         });
       }
 
       res.status(200).json({
         success: true,
-        data: user
+        data: duplex
       });
     } catch (error) {
       res.status(500).json({

@@ -1,41 +1,76 @@
-import { UserRepository } from '../repositories/userRepository.js';
-import { userCreateSchema, usuarioUpdateSchema, usuarioResponseSchema } from "../dto/user.dto.js";
+import { userRepository } from '../repositories/userRepository.js';
+import { appError } from '../config/appError.js';
+import bcrypt from 'bcryptjs';
 
-export const UserService = {
-
+export const userService = {
+  
   async create(data) {
     if (!data.userName || !data.fullName || !data.email) {
-      throw new Error('Todos los campos son obligatorios');
+      throw new appError('All fields are required', 400);
     }
 
-    return await UserRepository.create({
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      throw new appError('Invalid email', 400);
+    }
+
+    const existingUser = await userRepository.findByEmail(data.email);
+    if (existingUser) {
+      console.log("marcelo");
+      throw new appError('The email is already registered', 400);
+    }
+
+    const hashedPassword = await bcrypt.hash('123456', 10);
+    return await userRepository.create({
       ...data,
-      password: '123456',
+      password: hashedPassword,
       isActive: true
     });
   },
 
   async update(id, data) {
-    await UserService.findById(id);
+    if (!data.userName || !data.fullName || !data.email) {
+      throw new appError('All fields are required', 400);
+    }
 
-    return await UserRepository.update(id, data);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      throw new appError('Invalid email', 400);
+    }
+    
+    await userService.findById(id);
+
+    return await userRepository.update(id, data);
   },
 
   async delete(id) {
-    await UserService.findById(id);
-
-    await UserRepository.delete(id);
+    await userService.findById(id);
+    await userRepository.delete(id);
   },
 
   async findAll() {
-    return await UserRepository.findAll();
+    return await userRepository.findAll();
   },
 
   async findById(id) {
-    const user = await UserRepository.findById(id);
+    const user = await userRepository.findById(id);
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      throw new appError('User Not Found', 404);
     }
+    return user;
+  },
+
+  async validateUserNameAndPassword(userName, password) {
+    const user = await userRepository.findByUserName(userName);
+
+    if (!user) {
+      throw new appError('Incorrect username or password', 500);
+    }
+    
+    if (user.isActive == false) {
+      throw new appError('Incorrect username or password', 500);
+    }
+    
     return user;
   }
 
