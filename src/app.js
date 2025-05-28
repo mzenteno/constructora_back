@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
 import { errorHandler } from './config/errorHandler.js';
+import { contextMiddleware } from './config/contextMiddleware.js'
+import { authMiddleware } from './config/authMiddleware.js'
 import indexRouter from './routes/index.js';
 
 dotenv.config();
@@ -13,10 +15,13 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Contexto que setea tx
+app.use(contextMiddleware);
+
 app.use('/', indexRouter);
 app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  (`Servidor corriendo en http://localhost:${PORT}`);
 });

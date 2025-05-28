@@ -1,11 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../config/prisma.js';
+import { getTx } from '../config/context.js';
 
-const prisma = new PrismaClient();
+function db() {
+  return getTx() || prisma;
+}
 
 export const duplexUnityRepository = {
-
   async create(data) {
-    return await prisma.duplexUnity.create({
+    return await db().duplexUnity.create({
       data: {
         code: data.code,
         description: data.description,
@@ -15,7 +17,7 @@ export const duplexUnityRepository = {
   },
 
   async update(id, data) {
-    return await prisma.duplexUnity.update({
+    return await db().duplexUnity.update({
       where: { id },
       data: {
         code: data.code,
@@ -26,13 +28,13 @@ export const duplexUnityRepository = {
   },
 
   async delete(id) {
-    return await prisma.duplexUnity.delete({
+    return await db().duplexUnity.delete({
       where: { id }
     });
   },
 
   async findAll() {
-    return await prisma.duplexUnity.findMany({
+    return await db().duplexUnity.findMany({
       select: {
         id: true,
         code: true,
@@ -52,7 +54,7 @@ export const duplexUnityRepository = {
   },
 
   async findById(id) {
-    return await prisma.duplexUnity.findUnique({
+    return await db().duplexUnity.findUnique({
       select: {
         id: true,
         code: true,
@@ -70,7 +72,7 @@ export const duplexUnityRepository = {
   },
 
   async findByDuplexId(duplexId) {
-    return await prisma.duplexUnity.findMany({
+    return await db().duplexUnity.findMany({
       select: {
         id: true,
         code: true,

@@ -16,11 +16,11 @@ export const userService = {
 
     const existingUser = await userRepository.findByEmail(data.email);
     if (existingUser) {
-      console.log("marcelo");
       throw new appError('The email is already registered', 400);
     }
 
     const hashedPassword = await bcrypt.hash('123456', 10);
+
     return await userRepository.create({
       ...data,
       password: hashedPassword,

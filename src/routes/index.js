@@ -1,9 +1,14 @@
 import { Router } from 'express';
 import { authMiddleware } from "../config/authMiddleware.js";
+import { authController } from "../controllers/authController.js";
 import user from "./user.js";
 import duplex from "./duplex.js";
+import duplexUnityBudgetItem from "./duplexUnityBudgetItem.js";
 import duplexUnity from "./duplexUnity.js";
-import { authController } from "../controllers/authController.js";
+import expenseType from "./expenseType.js";
+import expense from "./expense.js";
+import supplier from "./supplier.js";
+import land from "./land.js";
 
 const router = Router();
 
@@ -15,5 +20,10 @@ router.use(authMiddleware);
 router.use('/user', user);
 router.use('/duplex', duplex);
 router.use('/duplex-unity', duplexUnity);
+router.use('/duplex-unity-budget-item', duplexUnityBudgetItem);
+router.use('/expense', expense);
+router.use('/expense-type', expenseType);
+router.use('/supplier', supplier);
+router.use('/land', land);
 
 export default router;

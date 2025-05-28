@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())  @map("id")
+  id       Int     @id @default(autoincrement()) @map("id")
   userName String  @map("user_name") @db.VarChar(100)
   fullName String  @map("full_name") @db.VarChar(100)
   email    String  @db.VarChar(100)
@@ -20,21 +20,92 @@ model User {
 }
 
 model Duplex {
-  id            Int            @id @default(autoincrement())  @map("id")
-  code          String         @db.VarChar(30) 
-  description   String         @db.VarChar(100)
-  address       String         @db.VarChar(150)
+  id            Int           @id @default(autoincrement()) @map("id")
+  code          String        @db.VarChar(30)
+  description   String        @db.VarChar(100)
+  address       String        @db.VarChar(150)
   duplexUnities DuplexUnity[]
 
   @@map("duplex")
 }
 
 model DuplexUnity {
-  id          Int     @id @default(autoincrement())
-  code        String  @db.VarChar(30)
-  description String  @db.VarChar(100)
-  duplexId    Int     @map("duplex_id")
-  duplex      Duplex  @relation(fields: [duplexId], references: [id])
+  id          Int       @id @default(autoincrement())
+  code        String    @db.VarChar(30)
+  description String    @db.VarChar(100)
+  duplexId    Int       @map("duplex_id")
+  duplex      Duplex    @relation(fields: [duplexId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_duplex_id")
 
   @@map("duplex_unity")
+}
+
+model Expense {
+  id            Int           @id @default(autoincrement())
+  description   String        @db.VarChar(100)
+  amount        Decimal       @db.Decimal(10, 2)
+  createAt      DateTime      @map("create_at") @db.Date
+  expenseTypeId Int           @map("expense_type_id")
+  expenseType   ExpenseType   @relation(fields: [expenseTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_expense_type_id")
+
+  @@map("expense")
+}
+
+model ExpenseType {
+  id          Int    @id @default(autoincrement())
+  description String @db.VarChar(100)
+  expense     Expense[]
+
+  @@map("expense_type")
+}
+
+model Land {
+  id          Int      @id @default(autoincrement())
+  code        String   @db.VarChar(30)
+  ubication   String   @db.VarChar(100)
+  price       Decimal? @db.Decimal(18, 2)
+  description String   @db.VarChar(200)
+  sold        Boolean
+  supplierId  Int      @map("supplier_id")
+  supplier    Supplier @relation(fields: [supplierId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supplier_id")
+
+  @@map("land")
+}
+
+model Supplier {
+  id             Int    @id @default(autoincrement())
+  fullName       String @map("full_name") @db.VarChar(100)
+  phone          String @db.VarChar(100)
+  email          String @db.VarChar(100)
+  documentNumber String @map("document_number") @db.VarChar(100)
+  address        String @db.VarChar(150)
+  land           Land[]
+
+  @@map("supplier")
+}
+
+model BudgetItem {
+  id                      Int     @id @default(autoincrement())
+  code                    String  @db.VarChar(200)
+  descriptionEn           String? @map("description_en") @db.VarChar(200)
+  descriptionEs           String? @map("description_es") @db.VarChar(200)
+  unit                    String? @db.VarChar(5)
+  typeItem                String  @map("type_item") @db.VarChar(5)
+  orderItem               Int     @map("order_item")
+  visible                 Boolean
+  parentId                Int?    @map("parent_id")
+  duplexUnityBudgetItem   DuplexUnityBudgetItem[]
+
+  @@map("budget_item")
+}
+
+model DuplexUnityBudgetItem {
+  id              Int @id @default(autoincrement())
+  duplexUnityId   Int @map("duplex_unity_id")
+  budgetItemId    Int @map("budget_item_id")
+  amountBudgete   Decimal?  @map("amount_budgete")  @db.Decimal(18, 2)
+  amountSpent     Decimal?  @map("amount_spent")  @db.Decimal(18, 2)
+  amountReal      Decimal?  @map("amount_real")  @db.Decimal(18, 2)
+  budgetItem      BudgetItem @relation(fields: [budgetItemId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_item_id")
+
+  @@map("duplex_unity_budget_item")
 }

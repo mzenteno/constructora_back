@@ -1,11 +1,14 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../config/prisma.js';
+import { getTx } from '../config/context.js';
 
-const prisma = new PrismaClient();
+function db() {
+  return getTx() || prisma;
+}
 
 export const userRepository = {
 
   async create(data) {
-    return await prisma.user.create({
+    return await db().user.create({
       data: {
         userName: data.userName,
         fullName: data.fullName,
@@ -17,8 +20,7 @@ export const userRepository = {
   },
 
   async update(id, data) {
-    console.log(data);
-    return await prisma.user.update({
+    return await db().user.update({
       where: { id },
       data: {
         userName : data.userName,
@@ -26,11 +28,11 @@ export const userRepository = {
         email : data.email,
         isActive : data.isActive
       }
-    });
+    }); 
   },
 
   async delete(id) {
-    return await prisma.user.update({
+    return await db().user.update({
       where: { id },
       data: {
         isActive : false
@@ -39,7 +41,7 @@ export const userRepository = {
   },
 
   async findAll() {
-    return await prisma.user.findMany({
+    return await db().user.findMany({
       select: {
         id: true,
         userName: true,
@@ -54,7 +56,7 @@ export const userRepository = {
   },
 
   async findById(id) {
-    return await prisma.user.findUnique({
+    return await db().user.findUnique({
       select: {
         id: true,
         userName: true,
@@ -67,7 +69,7 @@ export const userRepository = {
   },
 
   async findByUserName(userName) {
-    return await prisma.user.findFirst({
+    return await db().user.findFirst({
       select: {
         id: true,
         userName: true,
@@ -81,7 +83,7 @@ export const userRepository = {
   },
 
   async findByEmail(email) {
-    return await prisma.user.findFirst({
+    return await db().user.findFirst({
       select: {
         id: true
       },
