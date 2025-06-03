@@ -13,6 +13,8 @@ export const duplexService = {
       throw new appError('All fields are required', 400);
     }
 
+    console.log(data);
+
     // Obtener lista de budget
     const budgetList = await budgetItemRepository.findAll();
     
@@ -25,6 +27,7 @@ export const duplexService = {
         address: data.address
       });
       
+      const duplexUnityBudgetItems = [];
       for (const unity of data.duplexUnities) {
         // Insertar duplexUnity
         const duplexUnity = await duplexUnityRepository.create({
@@ -33,9 +36,9 @@ export const duplexService = {
           duplexId: duplex.id 
         });
 
-        // Insertar DuplexUnityBudgetItem por cadad duplexUnity
+        // Prepara todos los budget items para insertar        
         for (const budgetItem of budgetList) {
-          await duplexUnityBudgetItemRepository.create({
+          duplexUnityBudgetItems.push({
             duplexUnityId: duplexUnity.id,
             budgetItemId: budgetItem.id,
             amountBudgete: 0,
@@ -44,22 +47,25 @@ export const duplexService = {
           });
         }
       }
+
+      // Inserta todos los budget items en lote
+      await tx.duplexUnityBudgetItem.createMany({
+        data: duplexUnityBudgetItems
+      });
+
+      return duplex;
     });
   },
 
   async update(id, data) {
-    console.log(id);
-    console.log(data);
     if (!data.code || !data.description) {
       throw new appError('All fields are required', 400);
     }
 
-    await duplexService.findById(id);
     return await duplexRepository.update(id, data);
   },
 
   async delete(id) {
-    await duplexService.findById(id);
     await duplexRepository.delete(id);
   },
 
@@ -68,13 +74,16 @@ export const duplexService = {
   },
 
   async findById(id) {
-    console.log("update3");
     const dupĺex = await duplexRepository.findById(id);
-    console.log(dupĺex);
     if (!dupĺex) {
       throw new appError('Duplex Not Found', 404);
     }
     return dupĺex;
+  },
+
+  async getNewCode() {
+    const code = await duplexRepository.getNewCode();
+    return code;
   }
 
 };

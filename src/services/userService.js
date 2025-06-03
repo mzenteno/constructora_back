@@ -38,8 +38,6 @@ export const userService = {
       throw new appError('Invalid email', 400);
     }
     
-    await userService.findById(id);
-
     return await userRepository.update(id, data);
   },
 
@@ -62,7 +60,6 @@ export const userService = {
 
   async validateUserNameAndPassword(userName, password) {
     const user = await userRepository.findByUserName(userName);
-
     if (!user) {
       throw new appError('Incorrect username or password', 500);
     }
@@ -72,6 +69,16 @@ export const userService = {
     }
     
     return user;
+  },
+
+  async updatePassword(id, data) {
+    if (!data.password) {
+      throw new appError('All fields are required', 400);
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    
+    return await userRepository.updatePassword(id, { password: hashedPassword });
   }
 
 };

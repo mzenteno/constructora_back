@@ -17,8 +17,6 @@ export const duplexRepository = {
   },
 
   async update(id, data) {
-    console.log("update3");
-
     return await db().duplex.update({
       where: { id },
       data: {
@@ -75,6 +73,19 @@ export const duplexRepository = {
       },
       where: { id }
     });
+  },
+
+  async getNewCode() {
+    const result = await prisma.$queryRaw`SELECT code FROM duplex WHERE code ~ '^D-\\d{4}$' ORDER BY code DESC LIMIT 1`;
+
+    if (result.length > 0) {
+      const lastCode = result[0].code;
+      const nextNumber = parseInt(lastCode.split('-')[1]) + 1;
+      const newCode = `D-${String(nextNumber).padStart(4, '0')}`;
+      return newCode;
+    } else {
+      return 'D-0001';
+    }
   }
 
 }

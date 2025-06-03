@@ -14,7 +14,7 @@ export const duplexUnityBudgetItemRepository = {
         duplexUnityId: data.duplexUnityId,
         budgetItemId: data.budgetItemId,
         amountBudgete: data.amountBudgete,
-        amountSpent: data.amountBudgete,
+        amountSpent: data.amountSpent,
         amountReal: data.amountReal
        }
     });
@@ -86,7 +86,6 @@ export const duplexUnityBudgetItemRepository = {
   },
 
 async findSumByBudgetItemForDuplexUnity(duplexUnityIds) {
-  console.log(duplexUnityIds);
   const rows = await db().$queryRaw`
     SELECT 
       b.id,
@@ -107,8 +106,7 @@ async findSumByBudgetItemForDuplexUnity(duplexUnityIds) {
     GROUP BY 
       b.id, b.code, b.description_en, b.description_es,
       b.unit, b.type_item, b.order_item, b.visible, b.parent_id
-    ORDER BY b.order_item;
-  `;
+    ORDER BY b.order_item;`;
 
   return rows.map(row => ({
     amountBudgete: Number(row.amountBudgete),

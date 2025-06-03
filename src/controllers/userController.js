@@ -76,6 +76,26 @@ export const userController = {
         message: error.message
       });
     }
+  },
+
+  async changePassword(req, res) {
+    try {
+      const id = parseInt(req.params.id);
+      const data = req.body;
+
+      const userSaved = await userService.updatePassword(id, data);
+      const { password, ...userWithOutPassword } = userSaved;
+      
+      res.status(200).json({
+        success: true,
+        data: userWithOutPassword
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
   }
 
 }

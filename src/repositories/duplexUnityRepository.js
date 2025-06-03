@@ -72,6 +72,7 @@ export const duplexUnityRepository = {
   },
 
   async findByDuplexId(duplexId) {
+    console.log(duplexId);
     return await db().duplexUnity.findMany({
       select: {
         id: true,

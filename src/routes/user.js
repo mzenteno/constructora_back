@@ -8,5 +8,6 @@ router.put('/:id', userController.update);
 router.put('/:id', userController.findById);
 router.get('/', userController.findAll);
 router.get('/:id', userController.findById);
+router.put('/change-password/:id', userController.changePassword);
 
 export default router;

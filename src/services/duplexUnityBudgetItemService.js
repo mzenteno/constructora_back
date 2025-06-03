@@ -39,9 +39,6 @@ export const duplexUnityBudgetItemService = {
         const spent = Number(item.amountSpent) + (Number(data.amountSpent) / 2);
         const amountReal = budgete - spent;
 
-        console.log(budgete);
-        console.log(spent);
-
         await duplexUnityBudgetItemRepository.update(item.id, {
           amountBudgete: budgete,
           amountSpent: spent,
@@ -54,7 +51,6 @@ export const duplexUnityBudgetItemService = {
   async findByDuplex(duplexId) {
     const duplexUnityList = await duplexUnityRepository.findByDuplexId(duplexId);
     return await duplexUnityBudgetItemRepository.findSumByBudgetItemForDuplexUnity([duplexUnityList[0].id, duplexUnityList[1].id]);
-    //return await duplexUnityBudgetItemRepository.findByDuplexUnity(duplexUnityList[1].id);
   }
 
 };

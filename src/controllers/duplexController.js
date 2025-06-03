@@ -74,6 +74,22 @@ export const duplexController = {
         message: error.message
       });
     }
+  },
+
+  async getNewCode(req, res) {
+    try {
+      const code = await duplexService.getNewCode();
+
+      res.status(200).json({
+        success: true,
+        data: { code: code}
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
   }
 
 }

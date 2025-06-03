@@ -94,6 +94,15 @@ export const userRepository = {
         }
       }
     });
-  }
+  },
+
+  async updatePassword(id, data) {
+    return await db().user.update({
+      where: { id },
+      data: {
+        password : data.password
+      }
+    }); 
+  },
 
 }

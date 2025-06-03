@@ -4,7 +4,6 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { errorHandler } from './config/errorHandler.js';
 import { contextMiddleware } from './config/contextMiddleware.js'
-import { authMiddleware } from './config/authMiddleware.js'
 import indexRouter from './routes/index.js';
 
 dotenv.config();
