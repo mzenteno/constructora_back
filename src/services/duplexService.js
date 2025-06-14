@@ -4,7 +4,6 @@ import { appError } from '../config/appError.js';
 import { duplexRepository } from '../repositories/duplexRepository.js';
 import { duplexUnityRepository } from '../repositories/duplexUnityRepository.js';
 import { budgetItemRepository } from '../repositories/budgetItemRepository.js';
-import { duplexUnityBudgetItemRepository } from '../repositories/duplexUnityBudgetItemRepository.js';
 
 export const duplexService = {
   
@@ -24,7 +23,11 @@ export const duplexService = {
       const duplex =  await duplexRepository.create({ 
         code: data.code, 
         description: data.description, 
-        address: data.address
+        address: data.address,
+        subTotalSpent: 0,
+        contractorsFee: 0,
+        deposit1: 0,
+        deposit2: 0
       });
       
       const duplexUnityBudgetItems = [];
@@ -63,6 +66,10 @@ export const duplexService = {
     }
 
     return await duplexRepository.update(id, data);
+  },
+
+  async updateSubTotalSpent(id, data) {
+    return await duplexRepository.updateSubTotalSpent(id, data);
   },
 
   async delete(id) {

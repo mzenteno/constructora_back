@@ -1,4 +1,7 @@
+import { prisma } from '../config/prisma.js';
+import { setTx } from '../config/context.js';
 import { duplexUnityBudgetItemRepository } from '../repositories/duplexUnityBudgetItemRepository.js';
+import { duplexService } from '../services/duplexService.js';
 import { duplexUnityRepository } from '../repositories/duplexUnityRepository.js';
 import { appError } from '../config/appError.js';
 
@@ -9,7 +12,6 @@ export const duplexUnityBudgetItemService = {
   },
 
   async update(id, data) {
-    //await expenseService.findById(id);
     return await duplexUnityBudgetItemRepository.update(id, data);
   },
 
@@ -32,20 +34,31 @@ export const duplexUnityBudgetItemService = {
   async updateByDuplex(duplexId, data) {
     const duplexUnityList = await duplexUnityRepository.findByDuplexId(duplexId);
 
-    for (const unity of duplexUnityList) {
-      const item = await duplexUnityBudgetItemRepository.findByDuplexUnityAndBudgetItem(unity.id, data.budgetItemId);
-      if (item) {
-        const budgete = Number(item.amountBudgete) + (Number(data.amountBudgete) / 2);
-        const spent = Number(item.amountSpent) + (Number(data.amountSpent) / 2);
-        const amountReal = budgete - spent;
+    console.log(data);
+    return await prisma.$transaction(async (tx) => {
+      setTx(tx);
 
-        await duplexUnityBudgetItemRepository.update(item.id, {
-          amountBudgete: budgete,
-          amountSpent: spent,
-          amountReal: amountReal
-        });
+      for (const unity of duplexUnityList) {
+        const item = await duplexUnityBudgetItemRepository.findByDuplexUnityAndBudgetItem(unity.id, data.budgetItemId);
+        if (item) {
+          const budgete = Number(item.amountBudgete) + (Number(data.amountBudgete) / 2);
+          const spent = Number(item.amountSpent) + (Number(data.amountSpent) / 2);
+          const amountReal = budgete - spent;
+
+          await duplexUnityBudgetItemRepository.update(item.id, {
+            amountBudgete: budgete,
+            amountSpent: spent,
+            amountReal: amountReal
+          });
+        }
       }
-    }
+
+      if(data.type == 'Spent') {
+        await duplexService.updateSubTotalSpent(duplexId, { subTotalSpent: data.amountSpent});
+      }      
+    });
+
+    
   },
 
   async findByDuplex(duplexId) {

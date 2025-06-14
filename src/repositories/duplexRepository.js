@@ -11,7 +11,11 @@ export const duplexRepository = {
       data: {
         code: data.code,
         description: data.description,
-        address: data.address
+        address: data.address,
+        subTotalSpent: 0,
+        contractorsFee: 0,
+        deposit1: 0,
+        deposit2: 0
       }
     });
   },
@@ -36,6 +40,17 @@ export const duplexRepository = {
     });
   },
 
+  async updateSubTotalSpent(id, data) {
+    return await db().duplex.update({
+      where: { id },
+      data: {
+        subTotalSpent: {
+          increment: data.subTotalSpent
+        }
+      }
+    });
+  },
+
   async delete(id) {
     return await db().duplex.delete({
       where: { id }
@@ -48,7 +63,11 @@ export const duplexRepository = {
         id: true,
         code: true,
         description: true,
-        address: true
+        address: true,
+        subTotalSpent: true,
+        contractorsFee: true,
+        deposit1: true,
+        deposit2: true
       },
       orderBy: {
         description: 'asc'
@@ -63,6 +82,10 @@ export const duplexRepository = {
         code: true,
         description: true,
         address: true,
+        subTotalSpent: true,
+        contractorsFee: true,
+        deposit1: true,
+        deposit2: true,
         duplexUnities: {
           select: {
             id: true,

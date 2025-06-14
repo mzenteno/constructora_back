@@ -17,7 +17,7 @@ app.use(morgan('dev'));
 // Contexto que setea tx
 app.use(contextMiddleware);
 
-app.use('/', indexRouter);
+app.use('/api', indexRouter);
 app.use(errorHandler);
 
 const PORT = process.env.PORT;

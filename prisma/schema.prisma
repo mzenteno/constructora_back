@@ -20,32 +20,36 @@ model User {
 }
 
 model Duplex {
-  id            Int           @id @default(autoincrement()) @map("id")
-  code          String        @db.VarChar(30)
-  description   String        @db.VarChar(100)
-  address       String        @db.VarChar(150)
-  duplexUnities DuplexUnity[]
+  id              Int           @id @default(autoincrement()) @map("id")
+  code            String        @db.VarChar(30)
+  description     String        @db.VarChar(100)
+  address         String        @db.VarChar(150)
+  subTotalSpent  Decimal?       @map("subtotal_spent")   @db.Decimal(18, 2)
+  contractorsFee Decimal?       @map("contractors_fee")   @db.Decimal(18, 2)
+  deposit1        Decimal?      @db.Decimal(18, 2)
+  deposit2        Decimal?      @db.Decimal(18, 2)
+  duplexUnities   DuplexUnity[]
 
   @@map("duplex")
 }
 
 model DuplexUnity {
-  id          Int       @id @default(autoincrement())
-  code        String    @db.VarChar(30)
-  description String    @db.VarChar(100)
-  duplexId    Int       @map("duplex_id")
-  duplex      Duplex    @relation(fields: [duplexId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_duplex_id")
+  id          Int    @id @default(autoincrement())
+  code        String @db.VarChar(30)
+  description String @db.VarChar(100)
+  duplexId    Int    @map("duplex_id")
+  duplex      Duplex @relation(fields: [duplexId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_duplex_id")
 
   @@map("duplex_unity")
 }
 
 model Expense {
-  id            Int           @id @default(autoincrement())
-  description   String        @db.VarChar(100)
-  amount        Decimal       @db.Decimal(10, 2)
-  createAt      DateTime      @map("create_at") @db.Date
-  expenseTypeId Int           @map("expense_type_id")
-  expenseType   ExpenseType   @relation(fields: [expenseTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_expense_type_id")
+  id            Int      @id @default(autoincrement())
+  description   String   @db.VarChar(100)
+  amount        Decimal  @db.Decimal(10, 2)
+  createAt      DateTime @map("create_at") @db.Date
+  expenseTypeId Int      @map("expense_type_id")
+  expenseType   ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_expense_type_id")
 
   @@map("expense")
 }
@@ -84,28 +88,34 @@ model Supplier {
 }
 
 model BudgetItem {
-  id                      Int     @id @default(autoincrement())
-  code                    String  @db.VarChar(200)
-  descriptionEn           String? @map("description_en") @db.VarChar(200)
-  descriptionEs           String? @map("description_es") @db.VarChar(200)
-  unit                    String? @db.VarChar(5)
-  typeItem                String  @map("type_item") @db.VarChar(5)
-  orderItem               Int     @map("order_item")
-  visible                 Boolean
-  parentId                Int?    @map("parent_id")
-  duplexUnityBudgetItem   DuplexUnityBudgetItem[]
+  id            Int     @id @default(autoincrement())
+  code          String  @db.VarChar(200)
+  descriptionEn String? @map("description_en") @db.VarChar(200)
+  descriptionEs String? @map("description_es") @db.VarChar(200)
+  unit          String? @db.VarChar(5)
+  typeItem      String  @map("type_item") @db.VarChar(5)
+  orderItem     Int     @map("order_item")
+  visible       Boolean
+  parentId      Int?    @map("parent_id")
 
   @@map("budget_item")
 }
 
 model DuplexUnityBudgetItem {
-  id              Int @id @default(autoincrement())
-  duplexUnityId   Int @map("duplex_unity_id")
-  budgetItemId    Int @map("budget_item_id")
-  amountBudgete   Decimal?  @map("amount_budgete")  @db.Decimal(18, 2)
-  amountSpent     Decimal?  @map("amount_spent")  @db.Decimal(18, 2)
-  amountReal      Decimal?  @map("amount_real")  @db.Decimal(18, 2)
-  budgetItem      BudgetItem @relation(fields: [budgetItemId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_item_id")
+  id            Int      @id @default(autoincrement())
+  duplexUnityId Int      @map("duplex_unity_id")
+  budgetItemId  Int      @map("budget_item_id")
+  amountBudgete Decimal? @map("amount_budgete") @db.Decimal(18, 2)
+  amountSpent   Decimal? @map("amount_spent") @db.Decimal(18, 2)
+  amountReal    Decimal? @map("amount_real") @db.Decimal(18, 2)
 
   @@map("duplex_unity_budget_item")
+}
+
+model duplex_unity_budget_item_detail {
+  id                          Int       @id @default(autoincrement())
+  duplexUnityBudgetItemId     Int       @map("duplex_unity_budget_item_id")
+  createAt                    DateTime  @map("create_at")   @db.Date
+  total                       Decimal?  @db.Decimal(18, 2)
+  description                 String?   @db.VarChar(200)
 }
