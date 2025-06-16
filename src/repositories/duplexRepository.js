@@ -51,6 +51,17 @@ export const duplexRepository = {
     });
   },
 
+  async updateContractorsDeposit(id, data) {
+    return await db().duplex.update({
+      where: { id },
+      data: {
+        contractorsFee: data.contractorsFee,
+        deposit1: data.deposit1,
+        deposit2: data.deposit2
+      }
+    });
+  },
+
   async delete(id) {
     return await db().duplex.delete({
       where: { id }

@@ -72,6 +72,10 @@ export const duplexService = {
     return await duplexRepository.updateSubTotalSpent(id, data);
   },
 
+  async updateContractorsDeposit(id, data) {
+    return await duplexRepository.updateContractorsDeposit(id, data);
+  },
+
   async delete(id) {
     await duplexRepository.delete(id);
   },

@@ -6,10 +6,12 @@ export const authController = {
 
   async login(req, res) {
     const { userName, password } = req.body;
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    // console.log(hashedPassword);
 
     const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-
     const user = await userService.validateUserNameAndPassword(userName, password);
+
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       return res.status(401).json({ success: false, message: 'Incorrect username or password' });

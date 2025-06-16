@@ -90,6 +90,26 @@ export const duplexController = {
         message: error.message
       });
     }
-  }
+  },
+
+  async updateContractorsDeposit(req, res) {
+    console.log("contractors-deposit");
+    try {
+      const id = parseInt(req.params.id);
+      const data = req.body;
+
+      const dupĺexSaved = await duplexService.updateContractorsDeposit(id, data);
+      
+      res.status(200).json({
+        success: true,
+        data: dupĺexSaved
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  },
 
 }
