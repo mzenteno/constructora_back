@@ -1,6 +1,7 @@
 import { prisma } from '../config/prisma.js';
 import { setTx } from '../config/context.js';
 import { duplexUnityBudgetItemRepository } from '../repositories/duplexUnityBudgetItemRepository.js';
+import { duplexUnityBudgetItemDetailService } from '../services/duplexUnityBudgetItemDetailService.js';
 import { duplexService } from '../services/duplexService.js';
 import { duplexUnityRepository } from '../repositories/duplexUnityRepository.js';
 import { appError } from '../config/appError.js';
@@ -34,7 +35,6 @@ export const duplexUnityBudgetItemService = {
   async updateByDuplex(duplexId, data) {
     const duplexUnityList = await duplexUnityRepository.findByDuplexId(duplexId);
 
-    console.log(data);
     return await prisma.$transaction(async (tx) => {
       setTx(tx);
 
@@ -50,12 +50,22 @@ export const duplexUnityBudgetItemService = {
             amountSpent: spent,
             amountReal: amountReal
           });
+
+          if(data.type == 'Spent') {
+            await duplexUnityBudgetItemDetailService.create({
+              duplexUnityBudgetItemId: item.id,
+              createAt: new Date(),
+              total: (Number(data.amountSpent) / 2),
+              description: data.description
+            });
+          }
         }
       }
 
       if(data.type == 'Spent') {
         await duplexService.updateSubTotalSpent(duplexId, { subTotalSpent: data.amountSpent});
-      }      
+       
+      }
     });
 
     

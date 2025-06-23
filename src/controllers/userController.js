@@ -1,21 +1,20 @@
-import { userService } from '../services/userService.js';
+import { userService } from "../services/userService.js";
 
 export const userController = {
-
   async create(req, res) {
     try {
       const data = req.body;
       const userSaved = await userService.create(data);
       const { password, ...userWithOutPassword } = userSaved;
-      
+
       res.status(201).json({
         success: true,
-        data: userWithOutPassword
+        data: userWithOutPassword,
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -27,15 +26,15 @@ export const userController = {
 
       const userSaved = await userService.update(id, data);
       const { password, ...userWithOutPassword } = userSaved;
-      
+
       res.status(200).json({
         success: true,
-        data: userWithOutPassword
+        data: userWithOutPassword,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -45,12 +44,12 @@ export const userController = {
       const users = await userService.findAll();
       res.status(200).json({
         success: true,
-        data: users
+        data: users,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -58,22 +57,22 @@ export const userController = {
   async findById(req, res) {
     try {
       const user = await userService.findById(parseInt(req.params.id));
-      
+
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: 'User Not found'
+          message: "User Not found",
         });
       }
 
       res.status(200).json({
         success: true,
-        data: user
+        data: user,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -85,17 +84,16 @@ export const userController = {
 
       const userSaved = await userService.updatePassword(id, data);
       const { password, ...userWithOutPassword } = userSaved;
-      
+
       res.status(200).json({
         success: true,
-        data: userWithOutPassword
+        data: userWithOutPassword,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
-  }
-
-}
+  },
+};

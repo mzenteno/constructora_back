@@ -1,20 +1,19 @@
-import { duplexService } from '../services/duplexService.js';
+import { duplexService } from "../services/duplexService.js";
 
 export const duplexController = {
-
   async create(req, res) {
     try {
       const data = req.body;
-      const duplexSaved = await duplexService.create(data);
-      
+      const dataSaved = await duplexService.create(data);
+
       res.status(201).json({
         success: true,
-        data: duplexSaved
+        data: dataSaved,
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -24,54 +23,54 @@ export const duplexController = {
       const id = parseInt(req.params.id);
       const data = req.body;
 
-      const dupĺexSaved = await duplexService.update(id, data);
-      
+      const dataSaved = await duplexService.update(id, data);
+
       res.status(200).json({
         success: true,
-        data: dupĺexSaved
+        data: dataSaved,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
 
   async findAll(req, res) {
     try {
-      const duplex = await duplexService.findAll();
+      const dataSaved = await duplexService.findAll();
       res.status(200).json({
         success: true,
-        data: duplex
+        data: dataSaved,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
 
   async findById(req, res) {
     try {
-      const duplex = await duplexService.findById(parseInt(req.params.id));
-      
-      if (!duplex) {
+      const dataSaved = await duplexService.findById(parseInt(req.params.id));
+
+      if (!dataSaved) {
         return res.status(404).json({
           success: false,
-          message: 'Duplex Not found'
+          message: "Duplex Not found",
         });
       }
 
       res.status(200).json({
         success: true,
-        data: duplex
+        data: dataSaved,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -82,34 +81,32 @@ export const duplexController = {
 
       res.status(200).json({
         success: true,
-        data: { code: code}
+        data: { code: code },
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
 
   async updateContractorsDeposit(req, res) {
-    console.log("contractors-deposit");
     try {
       const id = parseInt(req.params.id);
       const data = req.body;
 
-      const dupĺexSaved = await duplexService.updateContractorsDeposit(id, data);
-      
+      const dataSaved = await duplexService.updateContractorsDeposit(id, data);
+
       res.status(200).json({
         success: true,
-        data: dupĺexSaved
+        data: dataSaved,
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
   },
-
-}
+};

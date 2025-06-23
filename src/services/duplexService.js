@@ -12,8 +12,6 @@ export const duplexService = {
       throw new appError('All fields are required', 400);
     }
 
-    console.log(data);
-
     // Obtener lista de budget
     const budgetList = await budgetItemRepository.findAll();
     

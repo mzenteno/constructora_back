@@ -112,10 +112,12 @@ model DuplexUnityBudgetItem {
   @@map("duplex_unity_budget_item")
 }
 
-model duplex_unity_budget_item_detail {
+model DuplexUnityBudgetItemDetail {
   id                          Int       @id @default(autoincrement())
   duplexUnityBudgetItemId     Int       @map("duplex_unity_budget_item_id")
   createAt                    DateTime  @map("create_at")   @db.Date
   total                       Decimal?  @db.Decimal(18, 2)
   description                 String?   @db.VarChar(200)
+
+  @@map("duplex_unity_budget_item_detail")
 }

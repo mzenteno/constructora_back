@@ -4,7 +4,7 @@ import { appError } from '../config/appError.js';
 export const expenseService = {
   
   async create(data) {
-    if (!data.description || data.amount == null) {
+    if (data.amount == null) {
       throw new appError('All fields are required', 400);
     }
 
@@ -12,7 +12,7 @@ export const expenseService = {
   },
 
   async update(id, data) {
-    if (!data.description || data.amount == null) {
+    if (data.amount == null) {
       throw new appError('All fields are required', 400);
     }
 

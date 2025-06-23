@@ -81,13 +81,13 @@ export const duplexRepository = {
         deposit2: true
       },
       orderBy: {
-        description: 'asc'
+        code: 'desc'
       }
     });
   },
 
   async findById(id) {
-    return await db().duplex.findUnique({
+    const row = await db().duplex.findUnique({
       select: {
         id: true,
         code: true,
@@ -107,6 +107,16 @@ export const duplexRepository = {
       },
       where: { id }
     });
+
+    if (!row) return null;
+
+    return {
+      ...row,
+      subTotalSpent: Number(row.subTotalSpent),
+      contractorsFee: Number(row.contractorsFee),
+      deposit1: Number(row.deposit1),
+      deposit2: Number(row.deposit2)
+    };
   },
 
   async getNewCode() {
